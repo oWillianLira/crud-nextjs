@@ -70,16 +70,18 @@ export default function Table(props: TableProps) {
   }
 
   return (
-    <table className="w-full rounded-md overflow-hidden">
-      <thead
-        className={`
-        bg-gradient-to-r from-purple-400 to-blue-500
-        text-gray-100
-      `}
-      >
-        {renderHead()}
-      </thead>
-      <tbody>{renderData()}</tbody>
-    </table>
+    <div className="overflow-x-auto rounded-md ">
+      <table className="w-full rounded-md overflow-hidden">
+        <thead
+          className={`
+          bg-gradient-to-r from-purple-400 to-blue-500
+          text-gray-100
+        `}
+        >
+          {renderHead()}
+        </thead>
+        <tbody>{renderData()}</tbody>
+      </table>
+    </div>
   );
 }
