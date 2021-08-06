@@ -1,47 +1,21 @@
-import { useEffect, useState } from 'react';
 import Button from '../components/Button';
 import Form from '../components/Form';
 import Layout from '../components/Layout';
 import Table from '../components/Table';
-import Client from '../core/Client';
-import ClientRepo from '../core/ClientRepo';
-import ClientsCollection from '../backend/db/ClientsCollection';
+import useClients from '../hooks/useClients';
 
 export default function Home() {
-  const repo: ClientRepo = new ClientsCollection();
-
-  const [client, setClient] = useState<Client>(Client.empty());
-  const [clients, setClients] = useState<Client[]>();
-  const [view, setView] = useState<'table' | 'form'>('table');
-
-  useEffect(getAll, []);
-
-  function getAll() {
-    repo.getAll().then((clients) => {
-      setClients(clients);
-      setView('table');
-    });
-  }
-
-  function selectedClient(client: Client) {
-    setClient(client);
-    setView('form');
-  }
-
-  async function deletedClient(client: Client) {
-    await repo.delete(client);
-    getAll();
-  }
-
-  async function saveClient(client: Client) {
-    await repo.save(client);
-    getAll();
-  }
-
-  function newClient() {
-    setClient(Client.empty);
-    setView('form');
-  }
+  const {
+    client,
+    clients,
+    ClientsCollection,
+    newClient,
+    selectedClient,
+    deletedClient,
+    saveClient,
+    tableView,
+    showTable,
+  } = useClients();
 
   return (
     <div
@@ -52,7 +26,7 @@ export default function Home() {
     `}
     >
       <Layout title="Registration">
-        {view === 'table' ? (
+        {tableView ? (
           <>
             <div className="flex justify-end">
               <Button className="mb-4 flex" color="green" onClick={newClient}>
@@ -62,7 +36,7 @@ export default function Home() {
             <Table clients={clients} selectedClient={selectedClient} deletedClient={deletedClient} />
           </>
         ) : (
-          <Form client={client} cancel={() => setView('table')} clientChange={saveClient} />
+          <Form client={client} cancel={() => showTable()} clientChange={saveClient} />
         )}
       </Layout>
     </div>
